@@ -165,3 +165,36 @@ export async function blokingCard(id: number, password: string) {
 
     return;
 }
+
+export async function unblokingCard(id: number, password: string) {
+    const card = await cardRepository.findById(id);
+
+    if(!card) {
+        console.log('\n ERRO \nCartão não encontrado\n');
+        return;
+    }
+
+    const cardExpired = dayjs().isAfter(dayjs(card.expirationDate, 'MM/YY'), 'month');
+    
+    //problema com promise catch error
+    if(cardExpired) {
+        console.log('\n ERRO \nCartão já está expirado\n');
+        return;
+    }
+
+    if(!card.isBlocked) {
+        console.log('\n ERRO \nCartão já está desbloqueado\n');
+        return;
+    }
+
+    const valid = await bcrypt.compare(password, card.password || '');
+
+    if(!valid) {
+        console.log('\n ERRO \nSenha incorreta\n');
+        return;
+    }
+
+    await cardRepository.update(id, {isBlocked: false});
+
+    return;
+}

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { CustomError } from "../models/customError.model.js";
 import { Card } from "../repositories/cardRepository.js";
-import { activateNewCard, blokingCard, createNewCard, showCardView } from "../services/card.service.js";
+import { activateNewCard, blokingCard, createNewCard, showCardView, unblokingCard } from "../services/card.service.js";
 
 export async function createCard(req: Request, res: Response) {
     const apiKey: string = res.locals.apiKey
@@ -32,6 +32,14 @@ export async function blockCard(req: Request, res: Response) {
     const { id, password }: { id: number, password: string } = req.body;
     
     await blokingCard(id, password);
+
+    res.sendStatus(200);
+}
+
+export async function unblockCard(req: Request, res: Response) {
+    const { id, password }: { id: number, password: string } = req.body;
+    
+    await unblokingCard(id, password);
 
     res.sendStatus(200);
 }
