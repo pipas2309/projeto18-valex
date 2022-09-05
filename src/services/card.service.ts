@@ -103,12 +103,16 @@ export async function activateNewCard(id: number, cvc: string, password: string)
     return;
 }
 
-export async function showCardView(id: number) {
+export async function showCardView(id: number): Promise<{
+    balance: number,
+    transactions: {}[],
+    recharges: {}[]
+}>  {
     const card = await cardRepository.findById(id);
 
     if(!card) {
         console.log('\n ERRO \nCartão não encontrado\n');
-        return [];
+        return;
     }
 
     const cardInfo = {

@@ -28,6 +28,15 @@ function schemaValidator(whichSchema: string) {
             validate = schemas['unblockCardSchema'].validate(data, { abortEarly: false });
         }
 
+        if(whichSchema === 'recharge card') {
+            validate = schemas['rechargeCardSchema'].validate(data, { abortEarly: false });
+        }
+
+        if(whichSchema === 'payment card') {
+            validate = schemas['paymentCardSchema'].validate(data, { abortEarly: false });
+        }
+
+
         if(validate.error || validate === undefined) {
             throw new CustomError(
                 `Entidade não processável ('${whichSchema}')!`, 
