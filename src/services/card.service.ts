@@ -10,6 +10,8 @@ import { findByApiKey } from "../repositories/companyRepository.js";
 import { findById } from "../repositories/employeeRepository.js";
 import { abreviateName } from '../utils/abreviateName.util.js';
 import * as cardRepository from '../repositories/cardRepository.js';
+import * as rechargeRepository from '../repositories/rechargeRepository.js';
+import * as paymentRepository from '../repositories/paymentRepository.js';
 
 dayjs.extend(customParseFormat)
 
@@ -99,4 +101,34 @@ export async function activateNewCard(id: number, cvc: string, password: string)
 
 
     return;
+}
+
+export async function showCardView(id: number) {
+    const card = await cardRepository.findById(id);
+
+    if(!card) {
+        console.log('\n ERRO \nCartão não encontrado\n');
+        return [];
+    }
+
+    const cardInfo = {
+        balance: 0,
+        transactions: [],
+        recharges: []
+    }
+
+    const rechardes = await rechargeRepository.findByCardId(id);
+    const payments = await paymentRepository.findByCardId(id);
+
+    //da pra refatorar e deixar tudo numa query só
+    for(let i = 0; i < rechardes.length; i++) {
+        cardInfo.balance += rechardes[i].amount;
+        cardInfo.recharges.push(rechardes[i])
+    }
+    for(let i = 0; i < payments.length; i++) {
+        cardInfo.balance -= payments[i].amount;
+        cardInfo.transactions.push(payments[i])
+    }
+
+    return cardInfo;
 }
