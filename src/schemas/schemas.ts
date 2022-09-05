@@ -1,8 +1,9 @@
-import { newCardSchema, activateCardSchema } from "./card.js"
+import { newCardSchema, activateCardSchema, blockCardSchema } from "./card.js"
 
 const schemas = {
     newCardSchema,
-    activateCardSchema
+    activateCardSchema,
+    blockCardSchema
 };
 
 export default schemas;
