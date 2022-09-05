@@ -16,6 +16,10 @@ function schemaValidator(whichSchema: string) {
             validate = schemas['newCardSchema'].validate(data, { abortEarly: false });
         }
 
+        if(whichSchema === 'activate card') {
+            validate = schemas['activateCardSchema'].validate(data, { abortEarly: false });
+        }
+
         if(validate.error || validate === undefined) {
             throw new CustomError(
                 `Entidade não processável ('${whichSchema}')!`, 
