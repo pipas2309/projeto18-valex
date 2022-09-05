@@ -37,12 +37,13 @@ export async function createNewCard(apiKey: string, card: Card) {
     }
 
     const cryptr = new Cryptr(process.env.CRYPT_SECRET_KEY);
+    const cvc = faker.finance.creditCardCVV()
 
     const newCard = {
         employeeId: card.employeeId,
         number: faker.finance.creditCardNumber('####-####-####-####'),
         cardholderName: abreviateName(employee.fullName),
-        securityCode: cryptr.encrypt(faker.finance.creditCardCVV()),
+        securityCode: cryptr.encrypt(cvc),
         expirationDate: dayjs().add(5, 'years').format('MM/YY'),
         //password,
         isVirtual: false,
@@ -53,7 +54,15 @@ export async function createNewCard(apiKey: string, card: Card) {
 
     await insert(newCard);
 
-    return;
+    const cardId = await cardRepository.findByTypeAndEmployeeId(card.type, card.employeeId)
+
+    return {
+        cardId: cardId.id, 
+        number: cardId.number,
+        cardholderName: cardId.cardholderName,
+        securityCode: cvc,
+        expirationDate: cardId.expirationDate
+    };
 }
 
 export async function activateNewCard(id: number, cvc: string, password: string) {
