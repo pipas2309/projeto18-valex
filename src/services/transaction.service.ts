@@ -103,3 +103,61 @@ export async function payByCard(cardId: number, businessId: number, amount: numb
 
     return;
 }
+
+export async function onlinePayByCard(number: string, cardholderName: string, expirationDate: string, securityCode: string, businessId: number, amount: number) {
+    const card = await cardRepository.findByCardDetails(number, cardholderName, expirationDate);
+
+    if(!card) {
+        console.log('\n ERRO \nCartão não encontrado\n');
+        return;
+    }
+
+    if(!card.password) {
+        console.log('\n ERRO \nCartão não está ativo\n');
+        return;
+    }
+
+    const cryptr = new Cryptr(process.env.CRYPT_SECRET_KEY);
+
+    //Para saber o código de segurança e fazer os testes
+    console.log(cryptr.decrypt(card.securityCode))
+
+    if(securityCode !== cryptr.decrypt(card.securityCode)) {
+        console.log('\n ERRO \nCódigo de segurança inválido\n')
+        return
+    }
+    const cardExpired = dayjs().isAfter(dayjs(card.expirationDate, 'MM/YY'), 'month');
+    
+    //problema com promise catch error
+    if(cardExpired) {
+        console.log('\n ERRO \nCartão já está expirado\n');
+        return;
+    }
+
+    if(card.isBlocked) {
+        console.log('\n ERRO \nCartão está bloqueado\n');
+        return;
+    }
+
+    const business = await businessRepository.findById(businessId);
+
+    if(!business) {
+        console.log('\n ERRO \nEstabelecimento não cadastrado\n');
+        return;
+    }
+
+    if(card.type !== business.type) {
+        console.log('\n ERRO \nCara, crachá, querido. Esse estabelecimento não é para esse tipo de cartão\n');
+        return;
+    }
+
+    const { balance } = await showCardView(card.id);
+
+    if(amount > balance) {
+        console.log('\n ERRO \nEntão, tem que ter dinheiro pra comprar as coisinhas\n');
+        return;
+    }
+    await paymentRepository.insert({ cardId: card.id, businessId, amount });
+
+    return;
+}

@@ -36,6 +36,10 @@ function schemaValidator(whichSchema: string) {
             validate = schemas['paymentCardSchema'].validate(data, { abortEarly: false });
         }
 
+        if(whichSchema === 'online payment card') {
+            validate = schemas['onlinePaymentCardSchema'].validate(data, { abortEarly: false });
+        }
+
 
         if(validate.error || validate === undefined) {
             throw new CustomError(

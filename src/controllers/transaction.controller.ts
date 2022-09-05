@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CustomError } from "../models/customError.model.js";
-import { payByCard, rechargingCard } from "../services/transaction.service.js";
+import { onlinePayByCard, payByCard, rechargingCard } from "../services/transaction.service.js";
 
 export async function rechargeCard(req: Request, res: Response) {
     const apiKey: string = res.locals.apiKey
@@ -19,4 +19,13 @@ export async function paymentCard(req: Request, res: Response) {
     await payByCard(cardId, businessId, amount, password);
 
     res.status(202).send('Vai!!! GASTA MAIS! No fim do mês alguém te ajuda, confia!');
+}
+
+export async function onlinePaymentCard(req: Request, res: Response) {
+    const { number, cardholderName, expirationDate, securityCode, businessId, amount } : 
+        { number: string, cardholderName: string, expirationDate: string, securityCode: string, businessId: number, amount: number } = req.body;
+    
+    await onlinePayByCard(number, cardholderName, expirationDate, securityCode, businessId, amount);
+
+    res.status(200).send('Compra online feita com sucesso!');
 }
