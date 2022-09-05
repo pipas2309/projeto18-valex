@@ -81,7 +81,7 @@ export async function insert(cardData: CardInsertData) {
     type,
   } = cardData;
 
-  connection.query(
+  await connection.query(
     `
     INSERT INTO cards ("employeeId", number, "cardholderName", "securityCode",
       "expirationDate", password, "isVirtual", "originalCardId", "isBlocked", type)
@@ -109,7 +109,7 @@ export async function update(id: number, cardData: CardUpdateData) {
       offset: 2,
     });
 
-  connection.query(
+  await connection.query(
     `
     UPDATE cards
       SET ${cardColumns}
@@ -120,5 +120,5 @@ export async function update(id: number, cardData: CardUpdateData) {
 }
 
 export async function remove(id: number) {
-  connection.query<any, [number]>("DELETE FROM cards WHERE id=$1", [id]);
+  await connection.query<any, [number]>("DELETE FROM cards WHERE id=$1", [id]);
 }
