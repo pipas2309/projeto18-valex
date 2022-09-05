@@ -1,5 +1,5 @@
-import { newCardSchema, activateCardSchema, blockCardSchema } from "./card.js"
-import { rechargeCardSchema, paymentCardSchema } from "./transaction.js"
+import { newCardSchema, activateCardSchema, blockCardSchema } from './card.js'
+import { rechargeCardSchema, paymentCardSchema, onlinePaymentCardSchema } from './transaction.js'
 
 const schemas = {
     newCardSchema,
@@ -7,7 +7,8 @@ const schemas = {
     blockCardSchema,
     unblockCardSchema: blockCardSchema,
     rechargeCardSchema,
-    paymentCardSchema
+    paymentCardSchema,
+    onlinePaymentCardSchema
 };
 
 export default schemas;
