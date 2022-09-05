@@ -33,7 +33,7 @@ function schemaValidator(whichSchema: string) {
         }
 
         if(whichSchema === 'payment card') {
-            validate = schemas['rechargeCardSchema'].validate(data, { abortEarly: false });
+            validate = schemas['paymentCardSchema'].validate(data, { abortEarly: false });
         }
 
 
