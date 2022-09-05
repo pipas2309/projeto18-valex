@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createCard } from "../controllers/card.controller.js";
+import { activateCard, blockCard, cardView, createCard, unblockCard } from "../controllers/card.controller.js";
 import { APIKeyValidation } from "../middlewares/APIKeyValidation.middleware.js";
 import schemaValidator from "../middlewares/schemaValidator.middleware.js";
 
@@ -7,5 +7,9 @@ import schemaValidator from "../middlewares/schemaValidator.middleware.js";
 const router = Router();
 
 router.post("/create-card", APIKeyValidation, schemaValidator('new card'), createCard);
+router.post("/activate-card", schemaValidator('activate card'), activateCard);
+router.get("/card-view/:id", cardView);
+router.post("/block-card", schemaValidator('block card'), blockCard);
+router.post("/unblock-card", schemaValidator('unblock card'), unblockCard);
 
 export default router;
