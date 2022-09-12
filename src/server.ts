@@ -2,6 +2,7 @@
 import express, { json } from 'express';
 import cors from "cors";
 import 'dotenv/config';
+import 'express-async-errors';
 
 //Main Route
 import router from './routes/index.js';

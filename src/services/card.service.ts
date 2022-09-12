@@ -12,6 +12,7 @@ import { abreviateName } from '../utils/abreviateName.util.js';
 import * as cardRepository from '../repositories/cardRepository.js';
 import * as rechargeRepository from '../repositories/rechargeRepository.js';
 import * as paymentRepository from '../repositories/paymentRepository.js';
+import { CustomError } from '../models/customError.model.js';
 
 dayjs.extend(customParseFormat)
 
@@ -32,8 +33,11 @@ export async function createNewCard(apiKey: string, card: Card) {
     }
 
     if(employeeCardType) {
-        console.log('\n ERRO \ncartao igual\n')
-        return
+        throw new CustomError(
+            'Cartão já existe!', 
+            409, 
+            'Alguém é o queridinho da empresa... 2 cartões... É sobrinho?'
+            );
     }
 
     const cryptr = new Cryptr(process.env.CRYPT_SECRET_KEY);
